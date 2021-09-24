@@ -1,10 +1,6 @@
 # Inserts a blank line between shell prompts
 add_newline = true
 
-# Replace the "❯" symbol in the prompt with "➜"
-[character]                            # The name of the module we are configuring is "character"
-success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
-
 # Disable the package module, hiding it from the prompt completely
 [package]
 disabled = true
@@ -26,6 +22,16 @@ style = "bold yellow"
 [directory]
 truncation_length = 8
 truncation_symbol = "…/"
+format = """\
+  $username\
+  $directory\
+  $kubernetes\
+  $aws\
+  $git_branch\
+  $git_state\
+  $git_status\
+  $character\
+  """
 
 [helm]
 format = "via [⎈ $version](bold white) "
@@ -44,15 +50,11 @@ symbol = "🌟 "
 show_always = false
 
 [kubernetes]
-symbol = "ﴱ "
-format = 'on [ﴱ $context \($namespace\)](bold bright-green) '
+symbol = "⎈ "
+format = 'on [⎈ $context \($namespace\)](bold bright-green) '
 disabled = false
 [kubernetes.context_aliases]
 "default" = "home-cluster"
-
-[directory]
-truncation_length = 5
-truncate_to_repo = true
 
 [time]
 disabled = false
@@ -95,16 +97,3 @@ style = "bold dimmed white"
 [character]
 success_symbol = "\n[❯](bold green)"
 error_symbol = "\n[✖](bold red)"
-
-format = """\
-  $username\
-  $directory\
-  $kubernetes\
-  $aws\
-  $git_branch\
-  $git_state\
-  $git_status\
-  $character\
-  """
-[username]
-show_always = false
