@@ -1,4 +1,100 @@
+# Inserts a blank line between shell prompts
 add_newline = true
+
+# Replace the "❯" symbol in the prompt with "➜"
+[character]                            # The name of the module we are configuring is "character"
+success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+[battery]
+full_symbol = "🔋 "
+charging_symbol = "⚡️ "
+discharging_symbol = "💀 "
+[[battery.display]]  # "bold red" style and discharging_symbol when capacity is between 0% and 10%
+threshold = 40
+style = "bold red"
+
+[[battery.display]]  # "bold yellow" style when capacity is between 10% and 30%
+threshold = 60
+style = "bold yellow"
+
+# when capacity is over 30%, the battery indicator will not be displayed
+
+[directory]
+truncation_length = 8
+truncation_symbol = "…/"
+
+[helm]
+format = "via [⎈ $version](bold white) "
+detect_files = ["helmfile.yaml", "Chart.yaml", "helm-release.yaml"]
+symbol = "⎈ "
+
+[hostname]
+ssh_only = false
+format =  "on [$hostname](bold red) "
+disabled = false
+
+[java]
+symbol = "🌟 "
+
+[username]
+show_always = false
+
+[kubernetes]
+symbol = "ﴱ "
+format = 'on [ﴱ $context \($namespace\)](bold bright-green) '
+disabled = false
+[kubernetes.context_aliases]
+"default" = "home-cluster"
+
+[directory]
+truncation_length = 5
+truncate_to_repo = true
+
+[time]
+disabled = false
+format = '🕙[\[ $time \]]($style) '
+time_format = "%T"
+utc_time_offset = "-7"
+time_range = "10:00:00-14:00:00"
+
+[git_status]
+conflicted = "🏳"
+ahead = "🏎💨"
+behind = "😰"
+diverged = "😵"
+up_to_date = "✓"
+untracked = "🤷‍"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
+
+[git_metrics]
+added_style = "bold blue"
+format = '[+$added]($added_style)/[-$deleted]($deleted_style) '
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+cherry_pick = "[🍒 PICKING](bold red)"
+
+[git_commit]
+commit_hash_length = 4
+tag_symbol = "🔖 "
+
+[memory_usage]
+disabled = false
+threshold = 75
+symbol = "🐏 "
+style = "bold dimmed white"
+
+[character]
+success_symbol = "\n[❯](bold green)"
+error_symbol = "\n[✖](bold red)"
 
 format = """\
   $username\
@@ -10,42 +106,5 @@ format = """\
   $git_status\
   $character\
   """
-
-[character]
-success_symbol = "\n[❯](bold green)"
-error_symbol = "\n[✖](bold red)"
-
-[cmd_duration]
-min_time = 500
-
-[directory]
-truncation_length = 5
-truncate_to_repo = true
-
-# Disable the package module, hiding it from the prompt completely
-[package]
-disabled = true
-
 [username]
 show_always = false
-
-[kubernetes]
-symbol = "ﴱ "
-format = 'on [ﴱ $context \($namespace\)](bold bright-green) '
-disabled = false
-[kubernetes.context_aliases]
-"default" = "home-cluster"
- 
-[aws]
-format = "on [$symbol$profile( $region)]($style) "
-style = "bold Yellow"
-symbol = "☁️ "
-
-[aws.region_aliases]
-us-east-1 = "N. Virginia"
-us-east-2 = "Ohio"
-us-west-1 = "N. California"
-us-west-2 = "Oregon"
-
-[git_branch]
-symbol = " "
