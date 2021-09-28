@@ -13,8 +13,8 @@ discharging_symbol = "💀 "
 threshold = 40
 style = "bold red"
 
-[[battery.display]]  # "bold yellow" style when capacity is between 10% and 30%
-threshold = 60
+[[battery.display]]  # "bold yellow" style when capacity is between 40% and 90%
+threshold = 80
 style = "bold yellow"
 
 # when capacity is over 30%, the battery indicator will not be displayed
@@ -22,16 +22,7 @@ style = "bold yellow"
 [directory]
 truncation_length = 8
 truncation_symbol = "…/"
-format = """\
-  $username\
-  $directory\
-  $kubernetes\
-  $aws\
-  $git_branch\
-  $git_state\
-  $git_status\
-  $character\
-  """
+format = "[$path]($style)[$read_only]($read_only_style) "
 
 [helm]
 format = "via [⎈ $version](bold white) "
@@ -55,13 +46,14 @@ format = 'on [⎈ $context \($namespace\)](bold bright-green) '
 disabled = false
 [kubernetes.context_aliases]
 "default" = "home-cluster"
+"production" = "black-element"
 
 [time]
 disabled = false
 format = '🕙[\[ $time \]]($style) '
 time_format = "%T"
 utc_time_offset = "-7"
-time_range = "10:00:00-14:00:00"
+time_range = "00:00:00-23:59:59"
 
 [git_status]
 conflicted = "🏳"
@@ -90,7 +82,7 @@ tag_symbol = "🔖 "
 
 [memory_usage]
 disabled = false
-threshold = 75
+threshold = 60
 symbol = "🐏 "
 style = "bold dimmed white"
 
