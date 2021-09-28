@@ -90,3 +90,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,windows,linux
 .DS_Store
+private_dot_config/.DS_Store
