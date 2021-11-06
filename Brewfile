@@ -1,6 +1,5 @@
 tap "go-task/tap"
 tap "fluxcd/tap"
-brew "awscli"
 brew "chezmoi"
 brew "coreutils"
 brew "curl"
