@@ -4,6 +4,7 @@ set -gx EDITOR nano
 
 set -gx GOPATH {{ .chezmoi.homeDir }}/go
 set -gx ANSIBLE_HOST_KEY_CHECKING False
+set -gx PATH $PATH $HOME/.krew/bin
 
 set -gx GPG_TTY (tty)
 

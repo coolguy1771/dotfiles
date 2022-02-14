@@ -4,7 +4,6 @@ Host *
   IdentityFile ~/.ssh/id_ed25519
   IdentityFile ~/.ssh/id_ecdsa
   IdentityFile ~/.ssh/id_rsa
-  IdentityFile ~/.ssh/ansible
 {{- if (eq .chezmoi.os "darwin") }}
   IgnoreUnknown UseKeychain
   UseKeychain yes
