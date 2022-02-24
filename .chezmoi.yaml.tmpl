@@ -1,11 +1,10 @@
+
+{{- $personal := false -}}{{/* true if this is a personal machine */}}
+
+{{- $personal = promptBool "personal" -}}
+
 format: yaml
 sourceDir: {{ .chezmoi.homeDir }}/Code/repos/coolguy1771/dotfiles
 
 data:
-  {{- if (contains "termux" .chezmoi.homeDir) }} 
-  bash: "/data/data/com.termux/files/usr/bin/bash"
-  fish: "/data/data/com.termux/files/usr/bin/fish"
-  {{- else }}
-  bash: "/usr/bin/env bash"
-  fish: "/usr/bin/env fish"
-  {{- end }}
+  personal: "{{ $personal }}"
