@@ -1,19 +1,11 @@
 [user]
-  name = Tyler Witlin
+  name = Devin Buhl
   {{- if (eq .personal "true") }}
-  {{- if (contains "termux" .chezmoi.homeDir) }}
-  email = 45468117+coolguy1771@users.noreply.github.com
-  signingKey = 9A2ACED8FEE01D9B7EA9A2CFDAF7C2C0EF0FE7DF
-  {{- else }}
-  email = 45468117+coolguy1771@users.noreply.github.com
-  signingKey = C5B66011E51106110F13642B5BA251F7051E8C14
-  {{- end }}
-  {{- else }}
-  email = 45468117+coolguy1771@users.noreply.github.com
-  signingKey = 1C6684D015731F3B4BDF06C13B64DDB99568A2D1
+  email = twitlin@witl.xyz
+  signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPnKXgEGczcu8lGs+DEvRWgI4cSYHkAyTAU6/SMAHjL4 twitlin@mbp16inch2021.3520.dhcp.asu.edu
   {{- end }}
 [gpg]
-  program = gpg
+  format = ssh
 [format]
   signOff = true
 [core]
@@ -38,3 +30,46 @@
   clean = git-lfs clean -- %f
 [url "ssh://git@github.com/"]
   pushInsteadOf = https://github.com/
+[push]
+  autoSetupRemote = true
+[alias]
+  yolo = !git commit -m \"$(curl -s whatthecommit.com/index.txt)\"
+  a = add
+  ap = add -p
+  amc = am --continue
+  b = branch
+  bm = branch --merged
+  bnm = branch --no-merged
+  c = commit
+  cl = clonr
+  ca = commit --amend
+  cane = commit --amend --no-edit
+  cf = commit --fixup
+  cm = commit --message
+  co = checkout
+  cob = checkout -b
+  com = checkout master
+  cp = cherry-pick
+  d = diff
+  dc = diff --cached
+  dom = diff origin/master
+  fo = fetch origin
+  g = grep --line-number
+  mbhom = merge-base HEAD origin/master
+  mff = merge --ff-only
+  ol = log --pretty=oneline
+  l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  pu = push
+  puf = push --force
+  pl = pull --rebase --autostash
+  r = restore
+  ra = rebase --abort
+  rc = rebase --continue
+  ri = rebase --interactive
+  rl = reflog
+  riom = rebase --interactive origin/master
+  rpo = remote prune origin
+  s = status -sb
+  ss = commit --message snapshot --no-gpg-sign
+  su = submodule update
+  wd = diff --patience --word-diff

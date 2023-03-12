@@ -3,7 +3,12 @@
 {{- $personal = promptBool "personal" -}}
 
 format: yaml
-sourceDir: {{ .chezmoi.homeDir }}/Code/repos/coolguy1771/dotfiles
 
 data:
-  personal: "{{ $personal }}"
+  name: "Tyler Witlin"
+  personal: {{ $personal | quote }}
+
+{{- if lookPath "difft" }}
+diff:
+  command: difft
+{{- end }}
