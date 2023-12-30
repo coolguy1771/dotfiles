@@ -30,7 +30,7 @@ in {
       modules.users.twitlin.home-manager.enable = true;
 
       modules.users.twitlin.sops = {
-        defaultSopsFile = ./secrets.sops.yaml;
+        defaultSopsFile = ./secret.sops.yaml;
         secrets = {
           atuin_key = {
             path = "${config.home-manager.users.twitlin.xdg.configHome}/atuin/key";
