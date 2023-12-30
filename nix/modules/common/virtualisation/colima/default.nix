@@ -16,7 +16,7 @@ in {
           cfg.package
         ];
       };
-      modules.users.bjw-s.virtualisation.docker-cli.enable = true;
+      modules.users.twitlin.virtualisation.docker-cli.enable = true;
     }
 
     (mkIf (pkgs.stdenv.isDarwin) (import ./darwin.nix {username=username;} args))

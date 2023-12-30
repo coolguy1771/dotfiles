@@ -50,7 +50,7 @@
       };
 
       flake.nixosConfigurations = {
-        nas = myLib.mkNixosSystem     "x86_64-linux"  "osiris";
+        osiris = myLib.mkNixosSystem "x86_64-linux" "osiris";
       };
 
       # Build darwin flake using:

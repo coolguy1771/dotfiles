@@ -65,7 +65,6 @@ in
           "vfs objects" = "acl_xattr catia fruit streams_xattr";
           "fruit:time machine" = "yes";
           "comment" = "Time Machine Backups";
-          "path" = "/pluto/timeMachine";
           "read only" = "no";
         };
         # Docs = {

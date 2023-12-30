@@ -75,7 +75,6 @@ in {
           cane ="commit --amend --no-edit";
           cf = "commit --fixup";
           cm = "commit --message";
-          co = "checkout";
           cob = "checkout -b";
           com = "checkout master";
           cp = "cherry-pick";

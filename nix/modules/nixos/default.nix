@@ -16,7 +16,7 @@ in
 
     ./system/cpu
     ./system/openssh
-    ./system/qemu-guest-agent
+    # ./system/qemu-guest-agent
     ./system/video
 
     ./users

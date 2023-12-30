@@ -4,7 +4,7 @@ let
   vscode-extensions = (import ../../editor/vscode/extensions.nix){pkgs = pkgs;};
 in
 {
-  modules.users.bjw-s.editor.vscode = {
+  modules.users.twitlin.editor.vscode = {
     enable = true;
     package = pkgs-unstable.vscode;
 
