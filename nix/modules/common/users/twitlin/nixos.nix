@@ -4,7 +4,7 @@ let
 in {
   users.users.twitlin = {
     isNormalUser = true;
-    uid = 568;
+    uid = 1000;
     extraGroups = [
       "wheel"
     ] ++ ifGroupsExist [
