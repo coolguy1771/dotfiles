@@ -32,7 +32,7 @@ in
 
       servers.k3s = {
         enable = true;
-        package = pkgs-unstable.k3s_1_29;
+        package = pkgs-unstable.k3s_1_28;
         extraFlags = [
           "--tls-san=osiris.${deviceCfg.domain}"
         ];
