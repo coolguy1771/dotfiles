@@ -18,15 +18,15 @@ in
     };
   };
 
-  modules.users.twitlin.editor.vscode = {
-    extensions = with vscode-extensions; [
-      ms-kubernetes-tools.vscode-kubernetes-tools
-    ];
+  # modules.users.twitlin.editor.vscode = {
+  #   extensions = with vscode-extensions; [
+  #     ms-kubernetes-tools.vscode-kubernetes-tools
+  #   ];
 
-    config = {
-      vs-kubernetes = {
-        "vs-kubernetes.crd-code-completion" = "disabled";
-      };
-    };
-  };
+  #   config = {
+  #     vs-kubernetes = {
+  #       "vs-kubernetes.crd-code-completion" = "disabled";
+  #     };
+  #   };
+  # };
 }
