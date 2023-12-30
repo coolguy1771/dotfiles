@@ -7,6 +7,7 @@ in {
     uid = 1000;
     extraGroups = [
       "wheel"
+      "networkmanager"
     ] ++ ifGroupsExist [
       "network"
       "samba-users"
