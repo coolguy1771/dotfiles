@@ -34,6 +34,9 @@ in
 
   documentation.nixos.enable = true;
 
+  security.sudo.wheelNeedsPassword = false;
+  security.sudo.enable = true;
+
   # Increase open file limit for sudoers
   security.pam.loginLimits = [
     {
