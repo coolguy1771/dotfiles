@@ -1,3 +1,11 @@
 .github
 LICENSE
 README.md
+# Avoid pulling these when adding from a machine
+private_dot_cursor/extensions
+private_dot_cursor/projects
+private_dot_cursor/plans
+private_dot_cursor/ai-tracking
+private_dot_cursor/ide_state.json
+private_dot_cursor/argv.json
+private_dot_cursor/mcp.json

@@ -1,8 +1,15 @@
 {{- $personal := false -}}{{/* true if this is a personal machine */}}
-
 {{- $personal = promptBool "personal" -}}
 
 format: yaml
+
+# Exclude run scripts from diff/status so output stays focused on dotfiles
+diff:
+  exclude:
+    - scripts
+status:
+  exclude:
+    - scripts
 
 data:
   name: "Tyler Witlin"

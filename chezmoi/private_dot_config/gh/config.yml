@@ -1,0 +1,5 @@
+# GitHub CLI
+editor: nvim
+pager: less -FRX
+prompt: enabled
+git_protocol: ssh

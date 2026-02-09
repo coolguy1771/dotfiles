@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": "semgrep mcp -k stop-cli-scan -a cursor"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "semgrep mcp -k record-file-edit -a cursor"
+      }
+    ]
+  },
+  "beforeShellExecution": [
+    {
+      "command": ".cursor/hooks/1password/validate-mounted-env-files.sh"
+    }
+  ]
+}

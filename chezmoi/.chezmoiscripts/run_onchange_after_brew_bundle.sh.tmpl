@@ -1,0 +1,7 @@
+{{- if eq .chezmoi.os "darwin" }}
+#!{{ lookPath "bash" }}
+# Brewfile hash: {{ include "Brewfile.tmpl" | sha256sum }}
+set -e
+brew bundle --file="{{ .chezmoi.homeDir }}/.Brewfile"
+command -v fc-cache &>/dev/null && fc-cache -fv
+{{ end }}

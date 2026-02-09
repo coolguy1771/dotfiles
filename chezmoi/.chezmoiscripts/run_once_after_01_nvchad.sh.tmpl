@@ -1,0 +1,22 @@
+#!{{ lookPath "bash" }}
+# Install NvChad to ~/.config/nvim if neovim is installed and nvim config is missing
+set -e
+NVIM_CONFIG="${HOME}/.config/nvim"
+NVCHAD_REPO="https://github.com/NvChad/NvChad.git"
+
+if ! command -v nvim &>/dev/null; then
+  exit 0
+fi
+if [[ -d "$NVIM_CONFIG" && -f "$NVIM_CONFIG/init.lua" ]]; then
+  if grep -q "NvChad" "$NVIM_CONFIG/init.lua" 2>/dev/null; then
+    exit 0
+  fi
+fi
+if [[ -d "$NVIM_CONFIG" ]]; then
+  backup="${NVIM_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+  echo "Backing up existing nvim config to $backup"
+  mv "$NVIM_CONFIG" "$backup"
+fi
+mkdir -p "$(dirname "$NVIM_CONFIG")"
+git clone "$NVCHAD_REPO" "$NVIM_CONFIG" --depth 1
+echo "NvChad installed. Run nvim to finish setup."

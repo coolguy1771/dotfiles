@@ -1,0 +1,3 @@
+{{- if eq .chezmoi.os "linux" }}
+[[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
+{{- end }}

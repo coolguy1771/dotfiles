@@ -1,0 +1,14 @@
+{{- if eq .chezmoi.os "darwin" }}
+# Login shell PATH: only add dirs that exist
+_path_prepend() { [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1:$PATH"; }
+_path_prepend "{{ .chezmoi.homeDir }}/.local/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.cargo/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.krew/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.go/bin"
+_path_prepend "/usr/local/sbin"
+_path_prepend "/opt/podman/bin"
+{{- if lookPath "/opt/homebrew/bin/brew" }}
+eval $(/opt/homebrew/bin/brew shellenv)
+{{- end }}
+unset -f _path_prepend 2>/dev/null
+{{- end }}

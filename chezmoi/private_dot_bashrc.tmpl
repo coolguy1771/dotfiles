@@ -1,0 +1,98 @@
+{{- if eq .chezmoi.os "linux" }}
+# Environment
+export KUBE_EDITOR=nvim
+export VISUAL=nvim
+export EDITOR=nvim
+export GOPATH="{{ .chezmoi.homeDir }}/.go"
+export ANSIBLE_FORCE_COLOR=true
+export ANSIBLE_HOST_KEY_CHECKING=False
+export PY_COLORS=true
+export GPG_TTY=$(tty)
+
+{{- if stat (joinPath .chezmoi.homeDir ".config/sops/age/keys.txt") }}
+export SOPS_AGE_KEY_FILE="{{ .chezmoi.homeDir }}/.config/sops/age/keys.txt"
+{{- end }}
+
+# Path: only prepend dirs that exist
+_path_prepend() { [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1:$PATH"; }
+_path_prepend "{{ .chezmoi.homeDir }}/.local/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.cargo/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.krew/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.go/bin"
+unset -f _path_prepend 2>/dev/null
+
+# Hooks and tools
+[[ -n $(command -v direnv) ]] && eval "$(direnv hook bash)"
+[[ -n $(command -v starship) ]] && eval "$(starship init bash)"
+[[ -n $(command -v zoxide) ]] && eval "$(zoxide init bash)"
+
+# fzf opts (keybindings: brew path or /usr/share/doc/fzf/examples on Linux)
+if command -v fzf &>/dev/null; then
+  [[ -f "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh" ]] && source "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh"
+  for _f in "$(brew --prefix fzf 2>/dev/null)/shell/keybindings.bash" /usr/share/doc/fzf/examples/key-bindings.bash; do
+    [[ -n "$_f" && -f "$_f" ]] && source "$_f" && break
+  done
+  unset _f 2>/dev/null
+fi
+
+# Helpers and aliases
+[[ -f "{{ .chezmoi.homeDir }}/.config/shell/helpers.sh" ]] && source "{{ .chezmoi.homeDir }}/.config/shell/helpers.sh"
+
+# cat -> bat when available
+cat() {
+    if [[ $# -gt 0 ]]; then
+        if command -v bat &>/dev/null; then
+            bat --theme Dracula --paging=never --style plain "$@"
+        else
+            command cat "$@"
+        fi
+    fi
+}
+
+# watch with viddy or watch
+watch() {
+    if [[ $# -gt 0 ]]; then
+        if command -v viddy &>/dev/null; then
+            viddy -d -n 2 --shell bash "$@"
+        else
+            command watch -x bash -c "$*"
+        fi
+    fi
+}
+
+# chezmoi shorthand (do not run from dotfiles repo)
+cm() {
+    if [[ "$(pwd)" == "{{ .chezmoi.sourceDir }}" ]]; then
+        printf "Do not run chezmoi within the dotfiles repo you doofus"
+        return 1
+    fi
+    chezmoi "$@"
+}
+
+# terraform shorthand
+tf() { terraform "$@"; }
+
+# Greeting
+GREETINGS=(
+    "River!"
+    "Carl's Jr."
+    "Satan"
+    "Elmo"
+    "Count Dookie"
+    "SquareSpace"
+    "that one guy with the hockey hair"
+    "he who cannot be named"
+    "the letters F U"
+    "the ones who bought you into this world"
+    "Rick Astley"
+    "The Bee Movie"
+    "NordVPN"
+    "Depends"
+    "Devin's left shoe"
+    "GeoCities"
+)
+if [[ $- == *i* ]]; then
+    idx=$((RANDOM % ${#GREETINGS[@]}))
+    printf '\033[38;5;214mThis terminal session brought to you in part by %s\n\033[0m' "${GREETINGS[$idx]}"
+fi
+{{- end }}

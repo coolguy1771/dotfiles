@@ -1,0 +1,9 @@
+# kubie: kubeconfig context switcher
+behavior:
+  prompt_enable: true
+  shallow_context: true
+  shallow_namespace: false
+  non_fatal_errors: false
+
+contexts: []
+namespaces: []

@@ -1,0 +1,5 @@
+# Global direnv config. Use .envrc in projects for layout_go, layout_node, etc.
+# See: https://direnv.net/docs/direnvrc.html
+layout_ps1() {
+  echo "direnv: $1"
+}

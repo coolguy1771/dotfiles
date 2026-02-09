@@ -1,0 +1,9 @@
+#!{{ lookPath "bash" }}
+# Refresh font cache so new fonts (e.g. from Brewfile casks) are visible.
+# On macOS, fc-cache is optional (fontconfig from brew). On Linux, usually present.
+set -e
+if command -v fc-cache &>/dev/null; then
+  fc-cache -fv
+fi
+# Ensure cache dir exists for zsh completions (used by zshrc)
+mkdir -p "${HOME}/.cache/zsh"

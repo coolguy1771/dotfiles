@@ -1,0 +1,120 @@
+{{- if eq .chezmoi.os "darwin" }}
+# Environment
+export KUBE_EDITOR=nvim
+export VISUAL=nvim
+export EDITOR=nvim
+export HOMEBREW_NO_ANALYTICS=1
+export GOPATH="{{ .chezmoi.homeDir }}/.go"
+export ANSIBLE_FORCE_COLOR=true
+export ANSIBLE_HOST_KEY_CHECKING=False
+export PY_COLORS=true
+export GPG_TTY=$(tty)
+
+{{- if stat (joinPath .chezmoi.homeDir ".config/sops/age/keys.txt") }}
+export SOPS_AGE_KEY_FILE="{{ .chezmoi.homeDir }}/.config/sops/age/keys.txt"
+{{- end }}
+
+# Path: only prepend dirs that exist (avoid polluting PATH)
+_path_prepend() {
+  [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$1:$PATH"
+}
+_path_prepend "{{ .chezmoi.homeDir }}/.local/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.cargo/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.krew/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.go/bin"
+_path_prepend "/usr/local/sbin"
+_path_prepend "/opt/podman/bin"
+{{- if lookPath "/opt/homebrew/bin/brew" }}
+eval $(/opt/homebrew/bin/brew shellenv)
+_path_prepend "/opt/homebrew/opt/curl/bin"
+_path_prepend "/opt/homebrew/opt/gettext/bin"
+_path_prepend "/opt/homebrew/opt/libiconv/bin"
+_path_prepend "/opt/homebrew/opt/findutils/libexec/gnubin"
+_path_prepend "/opt/homebrew/opt/coreutils/libexec/gnubin"
+_path_prepend "/opt/homebrew/opt/grep/libexec/gnubin"
+[[ -d /opt/homebrew/opt/curl/lib ]] && export LDFLAGS="-L/opt/homebrew/opt/curl/lib"
+[[ -d /opt/homebrew/opt/curl/include ]] && export CPPFLAGS="-I/opt/homebrew/opt/curl/include"
+[[ -d /opt/homebrew/opt/curl/lib/pkgconfig ]] && export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig"
+{{- end }}
+unfunction _path_prepend 2>/dev/null
+
+# Completions: cache and custom fpath
+[[ -d "{{ .chezmoi.homeDir }}/.cache/zsh" ]] || mkdir -p "{{ .chezmoi.homeDir }}/.cache/zsh"
+[[ -d "{{ .chezmoi.homeDir }}/.config/shell/completions" ]] && fpath=("{{ .chezmoi.homeDir }}/.config/shell/completions" $fpath)
+autoload -Uz compinit
+compinit -d "{{ .chezmoi.homeDir }}/.cache/zsh/zcompdump"
+
+# Hooks and tools
+[[ -n $(command -v direnv) ]] && eval "$(direnv hook zsh)"
+[[ -n $(command -v starship) ]] && eval "$(starship init zsh)"
+[[ -n $(command -v zoxide) ]] && eval "$(zoxide init zsh)"
+
+# fzf opts and keybindings (only if fzf installed)
+if command -v fzf &>/dev/null; then
+  [[ -f "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh" ]] && source "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh"
+  _fzf_keybindings=$(brew --prefix fzf 2>/dev/null)/shell/keybindings.zsh
+  [[ -f "$_fzf_keybindings" ]] && source "$_fzf_keybindings"
+  unset _fzf_keybindings
+fi
+
+# Helpers and aliases
+[[ -f "{{ .chezmoi.homeDir }}/.config/shell/helpers.sh" ]] && source "{{ .chezmoi.homeDir }}/.config/shell/helpers.sh"
+
+# cat -> bat when available
+cat() {
+    if [[ $# -gt 0 ]]; then
+        if command -v bat &>/dev/null; then
+            bat --theme Dracula --paging=never --style plain "$@"
+        else
+            command cat "$@"
+        fi
+    fi
+}
+
+# watch with viddy or watch
+watch() {
+    if [[ $# -gt 0 ]]; then
+        if command -v viddy &>/dev/null; then
+            viddy -d -n 2 --shell zsh "$@"
+        else
+            command watch -x zsh -c "$*"
+        fi
+    fi
+}
+
+# chezmoi shorthand (do not run from dotfiles repo)
+cm() {
+    if [[ "$(pwd)" == "{{ .chezmoi.sourceDir }}" ]]; then
+        printf "Do not run chezmoi within the dotfiles repo you doofus"
+        return 1
+    fi
+    chezmoi "$@"
+}
+
+# terraform shorthand
+tf() { terraform "$@"; }
+
+# Greeting
+GREETINGS=(
+    "River!"
+    "Carl's Jr."
+    "Satan"
+    "Elmo"
+    "Count Dookie"
+    "SquareSpace"
+    "that one guy with the hockey hair"
+    "he who cannot be named"
+    "the letters F U"
+    "the ones who bought you into this world"
+    "Rick Astley"
+    "The Bee Movie"
+    "NordVPN"
+    "Depends"
+    "Devin's left shoe"
+    "GeoCities"
+)
+if [[ -o interactive ]]; then
+    n=$(( RANDOM % ${#GREETINGS[@]} + 1 ))
+    printf '\033[38;5;214mThis terminal session brought to you in part by %s\n\033[0m' "${GREETINGS[$n]}"
+fi
+{{- end }}
