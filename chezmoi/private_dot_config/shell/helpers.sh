@@ -1,5 +1,39 @@
 # Shared aliases and functions for bash and zsh
 
+# Prefer neovim for vim when present
+[ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
+
+# mbsync config when set
+[ -n "${MBSYNCRC:-}" ] && [ -f "$MBSYNCRC" ] && alias mbsync='mbsync -c $MBSYNCRC'
+
+# Edit a script from ~/.local/bin with fzf
+se() {
+  [ ! -d "$HOME/.local/bin" ] && return 1
+  choice="$(find "$HOME/.local/bin" -mindepth 1 -maxdepth 1 2>/dev/null | while IFS= read -r p; do basename "$p"; done | fzf)"
+  [ -n "$choice" ] && [ -f "$HOME/.local/bin/$choice" ] && ${EDITOR:-vim} "$HOME/.local/bin/$choice"
+}
+
+# Verbosity and safe defaults
+alias \
+  cp="cp -iv" \
+  mv="mv -iv" \
+  rm="rm -vi" \
+  bc="bc -ql" \
+  rsync="rsync -vrPlu" \
+  mkd="mkdir -pv" \
+  ffmpeg="ffmpeg -hide_banner"
+
+# Colorize (GNU coreutils; only on Linux to avoid breaking macOS)
+if [ "$(uname)" = "Linux" ]; then
+  alias \
+    ls="ls -hN --color=auto --group-directories-first" \
+    grep="grep --color=auto" \
+    diff="diff --color=auto" \
+    ccat="highlight --out-format=ansi" \
+    ip="ip -color=auto" \
+    rm="rm -vI"
+fi
+
 alias ll='ls -la'
 alias gs='git status'
 alias gp='git push'

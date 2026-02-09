@@ -11,4 +11,73 @@ _path_prepend "/opt/podman/bin"
 eval $(/opt/homebrew/bin/brew shellenv)
 {{- end }}
 unset -f _path_prepend 2>/dev/null
+export OPENER="open"
+{{- else }}
+# Linux (Wayland) login profile
+# shellcheck disable=SC2155
+
+# Add all directories in ~/.local/bin to PATH
+export PATH="$PATH:$(find {{ .chezmoi.homeDir }}/.local/bin -type d 2>/dev/null | paste -sd ':' -)"
+
+unsetopt PROMPT_SP 2>/dev/null
+
+export EDITOR="nvim"
+export TERMINAL="st"
+export TERMINAL_PROG="st"
+export BROWSER="librewolf"
+
+export XDG_CONFIG_HOME="{{ .chezmoi.homeDir }}/.config"
+export XDG_DATA_HOME="{{ .chezmoi.homeDir }}/.local/share"
+export XDG_CACHE_HOME="{{ .chezmoi.homeDir }}/.cache"
+export NOTMUCH_CONFIG="$XDG_CONFIG_HOME/notmuch-config"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc-2.0"
+export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+export INPUTRC="$XDG_CONFIG_HOME/shell/inputrc"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export WINEPREFIX="$XDG_DATA_HOME/wineprefixes/default"
+export KODI_DATA="$XDG_DATA_HOME/kodi"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
+export TMUX_TMPDIR="${XDG_RUNTIME_DIR:-/tmp}"
+export ANDROID_SDK_HOME="$XDG_CONFIG_HOME/android"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export GOPATH="$XDG_DATA_HOME/go"
+export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
+export ANSIBLE_CONFIG="$XDG_CONFIG_HOME/ansible/ansible.cfg"
+export UNISON="$XDG_DATA_HOME/unison"
+export HISTFILE="$XDG_DATA_HOME/history"
+export MBSYNCRC="$XDG_CONFIG_HOME/mbsync/config"
+export ELECTRUMDIR="$XDG_DATA_HOME/electrum"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
+
+export DICS="/usr/share/stardict/dic/"
+export SUDO_ASKPASS="{{ .chezmoi.homeDir }}/.local/bin/dmenupass"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+export LESS="R"
+export LESS_TERMCAP_mb="$(printf '%b' '\033[1;31m')"
+export LESS_TERMCAP_md="$(printf '%b' '\033[1;36m')"
+export LESS_TERMCAP_me="$(printf '%b' '\033[0m')"
+export LESS_TERMCAP_so="$(printf '%b' '\033[01;44;33m')"
+export LESS_TERMCAP_se="$(printf '%b' '\033[0m')"
+export LESS_TERMCAP_us="$(printf '%b' '\033[1;32m')"
+export LESS_TERMCAP_ue="$(printf '%b' '\033[0m')"
+export LESSOPEN="| /usr/bin/highlight -O ansi %s 2>/dev/null"
+export QT_QPA_PLATFORMTHEME="gtk2"
+export QT_QPA_PLATFORM="wayland"
+export MOZ_ENABLE_WAYLAND=1
+export AWT_TOOLKIT="MToolkit wmname LG3D"
+export _JAVA_AWT_WM_NONREPARENTING=1
+export OPENER="xdg-open"
+
+# Wayland launcher (wofi/rofi-wayland/etc); uncomment and run in background if desired
+# [ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ] && setsid -f shortcuts >/dev/null 2>&1
+
+# Start Wayland compositor on tty1 if not already in a session
+# Set WAYLAND_SESSION to your compositor (e.g. Hyprland, sway, wayfire)
+if [ "$(tty)" = "/dev/tty1" ] && [ -z "${WAYLAND_DISPLAY:-}" ]; then
+  exec "${WAYLAND_SESSION:-Hyprland}"
+fi
+
+# TTY keymap (no passwd required)
+sudo -n loadkeys "$XDG_DATA_HOME/larbs/ttymaps.kmap" 2>/dev/null
 {{- end }}

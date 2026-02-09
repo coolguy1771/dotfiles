@@ -1,7 +1,12 @@
 {{- if eq .chezmoi.os "darwin" -}}
 #!/usr/bin/env bash
-# Brewfile hash: {{ include "chezmoi/Brewfile.tmpl" | sha256sum }}
+# Brewfile hash: {{ include "Brewfile.tmpl" | sha256sum }}
 set -e
+if ! brew --version &>/dev/null; then
+  echo "Homebrew cannot run (e.g. unsupported macOS version 26.x). Skipping brew bundle."
+  echo "Fix: run 'brew update' or update Homebrew manually. See https://github.com/Homebrew/brew/issues/20064"
+  exit 0
+fi
 brew bundle --file="{{ .chezmoi.homeDir }}/.Brewfile"
 command -v fc-cache &>/dev/null && fc-cache -fv
 {{ end }}

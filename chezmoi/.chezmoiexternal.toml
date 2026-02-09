@@ -1,0 +1,8 @@
+[".nano"]
+    type = "git-repo"
+    url = "https://github.com/scopatz/nanorc.git"
+    refreshPeriod = "168h"
+[".nvim"]
+    type = "git-repo"
+    url = "https://github.com/NvChad/NvChad.git"
+    refreshPeriod = "168h"
