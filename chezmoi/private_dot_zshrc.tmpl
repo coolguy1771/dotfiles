@@ -4,20 +4,35 @@ setopt autocd
 setopt interactive_comments
 stty stop undef 2>/dev/null
 
+# XDG Base Directory spec — many tools honor these and stop dropping files in $HOME
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+# Redirect stragglers that don't honor XDG by default
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export LESS="-FRX"
+export NODE_REPL_HISTORY="$XDG_STATE_HOME/node/repl_history"
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
+mkdir -p "$XDG_STATE_HOME/less" "$XDG_STATE_HOME/node" "$XDG_STATE_HOME/zsh" 2>/dev/null
+
 # History
 HISTSIZE=10000000
 SAVEHIST=10000000
-HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 setopt inc_append_history
+setopt share_history
+setopt extended_history
 
 # Environment
 export KUBE_EDITOR=nvim
 export VISUAL=nvim
 export EDITOR=nvim
 export HOMEBREW_NO_ANALYTICS=1
-export GOPATH="{{ .chezmoi.homeDir }}/.go"
+export GOPATH="{{ .chezmoi.homeDir }}/.local/share/go"
 export ANSIBLE_FORCE_COLOR=true
-export ANSIBLE_HOST_KEY_CHECKING=False
 export PY_COLORS=true
 export GPG_TTY=$(tty)
 
@@ -32,11 +47,11 @@ _path_prepend() {
 _path_prepend "{{ .chezmoi.homeDir }}/.local/bin"
 _path_prepend "{{ .chezmoi.homeDir }}/.cargo/bin"
 _path_prepend "{{ .chezmoi.homeDir }}/.krew/bin"
-_path_prepend "{{ .chezmoi.homeDir }}/.go/bin"
+_path_prepend "{{ .chezmoi.homeDir }}/.local/share/go/bin"
 _path_prepend "/usr/local/sbin"
 _path_prepend "/opt/podman/bin"
 {{- if lookPath "/opt/homebrew/bin/brew" }}
-eval $(/opt/homebrew/bin/brew shellenv)
+[[ -z "${HOMEBREW_PREFIX:-}" ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 _path_prepend "/opt/homebrew/opt/curl/bin"
 _path_prepend "/opt/homebrew/opt/gettext/bin"
 _path_prepend "/opt/homebrew/opt/libiconv/bin"
@@ -53,7 +68,13 @@ unfunction _path_prepend 2>/dev/null
 [[ -d "{{ .chezmoi.homeDir }}/.cache/zsh" ]] || mkdir -p "{{ .chezmoi.homeDir }}/.cache/zsh"
 [[ -d "{{ .chezmoi.homeDir }}/.config/shell/completions" ]] && fpath=("{{ .chezmoi.homeDir }}/.config/shell/completions" $fpath)
 autoload -Uz compinit
-compinit -d "{{ .chezmoi.homeDir }}/.cache/zsh/zcompdump"
+_zcompdump="{{ .chezmoi.homeDir }}/.cache/zsh/zcompdump"
+if [[ -n ${_zcompdump}(#qN.mh+24) ]]; then
+  compinit -d "$_zcompdump"
+else
+  compinit -C -d "$_zcompdump"
+fi
+unset _zcompdump
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 _comp_options+=(globdots)
@@ -66,7 +87,7 @@ _comp_options+=(globdots)
 # fzf opts and keybindings (only if fzf installed)
 if command -v fzf &>/dev/null; then
   [[ -f "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh" ]] && source "{{ .chezmoi.homeDir }}/.config/shell/fzf.sh"
-  _fzf_keybindings=$(brew --prefix fzf 2>/dev/null)/shell/keybindings.zsh
+  _fzf_keybindings="$(brew --prefix 2>/dev/null)/opt/fzf/shell/keybindings.zsh"
   [[ -f "$_fzf_keybindings" ]] && source "$_fzf_keybindings"
   unset _fzf_keybindings
 fi
@@ -122,23 +143,19 @@ bindkey -M visual '^[[P' vi-delete
 
 # cat -> bat when available
 cat() {
-    if [[ $# -gt 0 ]]; then
-        if command -v bat &>/dev/null; then
-            bat --theme Dracula --paging=never --style plain "$@"
-        else
-            command cat "$@"
-        fi
+    if command -v bat &>/dev/null; then
+        bat --theme Dracula --paging=never --style plain "$@"
+    else
+        command cat "$@"
     fi
 }
 
 # watch with viddy or watch
 watch() {
-    if [[ $# -gt 0 ]]; then
-        if command -v viddy &>/dev/null; then
-            viddy -d -n 2 --shell zsh "$@"
-        else
-            command watch -x zsh -c "$*"
-        fi
+    if command -v viddy &>/dev/null; then
+        viddy -d -n 2 --shell zsh "$@"
+    else
+        command watch -x zsh -c "$*"
     fi
 }
 
@@ -178,12 +195,13 @@ if [[ -o interactive ]]; then
     printf '\033[38;5;214mThis terminal session brought to you in part by %s\n\033[0m' "${GREETINGS[$n]}"
 fi
 
+# Autosuggestions (load before syntax highlighting per upstream guidance)
+[[ -f "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
 # Syntax highlighting (load last)
-if [[ -f "/opt/homebrew/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
-  source "/opt/homebrew/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-elif [[ -f "/usr/local/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
-  source "/usr/local/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-elif [[ -f "/usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
-  source "/usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-fi
+[[ -f "${HOMEBREW_PREFIX}/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
+  source "${HOMEBREW_PREFIX}/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 {{- end }}

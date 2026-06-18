@@ -1,0 +1,28 @@
+# Smart-case matching: case-insensitive unless pattern has uppercase
+--smart-case
+
+# Search hidden files (still respects .gitignore)
+--hidden
+
+# Don't blow up the terminal on minified files
+--max-columns=200
+--max-columns-preview
+
+# Common dirs that are never useful to grep
+--glob=!.git/
+--glob=!node_modules/
+--glob=!.venv/
+--glob=!venv/
+--glob=!__pycache__/
+--glob=!.mypy_cache/
+--glob=!.pytest_cache/
+--glob=!.ruff_cache/
+--glob=!dist/
+--glob=!build/
+--glob=!target/
+--glob=!.next/
+--glob=!.nuxt/
+--glob=!coverage/
+--glob=!*.lock
+--glob=!*.min.js
+--glob=!*.min.css

@@ -1,0 +1,5 @@
+{{- if eq .personal "true" -}}
+twitlin@witl.xyz ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPnKXgEGczcu8lGs+DEvRWgI4cSYHkAyTAU6/SMAHjL4
+{{- else if .workSigningKey -}}
+twitlin@cisco.com {{ .workSigningKey }}
+{{- end -}}

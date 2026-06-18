@@ -1,5 +1,9 @@
 {{- $personal := false -}}{{/* true if this is a personal machine */}}
 {{- $personal = promptBool "personal" -}}
+{{- $workSigningKey := "" -}}
+{{- if not $personal -}}
+{{- $workSigningKey = promptString "work SSH signing key (ssh-ed25519 ...)" -}}
+{{- end -}}
 
 format: yaml
 
@@ -14,3 +18,4 @@ status:
 data:
   name: "Tyler Witlin"
   personal: {{ $personal | quote }}
+  workSigningKey: {{ $workSigningKey | quote }}

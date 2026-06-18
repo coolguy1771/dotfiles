@@ -2,12 +2,33 @@ LogLevel ERROR
 
 Host *
   AddKeysToAgent yes
+{{- if ne .personal "true" }}
+  IdentityFile ~/.ssh/ghemu
+{{- end }}
   IdentityFile ~/.ssh/id_ed25519
   IdentityFile ~/.ssh/id_rsa
 {{- if (eq .chezmoi.os "darwin") }}
   IgnoreUnknown UseKeychain
   UseKeychain yes
 {{- end }}
+{{- if ne .personal "true" }}
+{{- if (eq .chezmoi.os "darwin") }}
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+{{- end }}
+{{- end }}
+  HashKnownHosts yes
+  # Keep idle connections alive on flaky networks
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+  # Connection multiplexing — fast successive git ops to the same host
+  ControlMaster auto
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlPersist 10m
+  # Modern crypto allow-lists
+  HostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com
+  KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256
+  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
 
 Host 192.168.*.*
   StrictHostKeyChecking no
@@ -18,3 +39,10 @@ Host 172.16.*.*
 Host 10.*.*.*
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
+{{- if ne .personal "true" }}
+
+Host emu
+  HostName github.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/ghemu
+{{- end }}

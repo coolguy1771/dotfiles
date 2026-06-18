@@ -1,0 +1,49 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/usr/bin/env bash
+set -e
+
+if ! command -v npm &>/dev/null; then
+  echo "npm not found, skipping skill/tool installation"
+  exit 0
+fi
+
+# lnai — AI-native shell tooling (https://lnai.sh)
+if ! command -v lnai &>/dev/null; then
+  npm install -g lnai
+fi
+
+if ! command -v npx &>/dev/null; then
+  echo "npx not found, skipping skill installation"
+  exit 0
+fi
+
+skill_add() {
+  echo "  → $1"
+  npx --yes skills add "$1" -g -y 2>&1 || echo "    Warning: failed to install $1"
+}
+
+echo "Installing agent skills..."
+
+# vercel-labs/agent-skills (confirmed: find-skills/SKILL.md example)
+skill_add "vercel-labs/agent-skills@react-best-practices"
+skill_add "vercel-labs/agent-skills@web-design-guidelines"
+
+# anthropics/skills (confirmed: find-skills/SKILL.md leaderboard — "frontend design, document processing")
+skill_add "anthropics/skills@agent-browser"
+skill_add "anthropics/skills@documentation-writer"
+skill_add "anthropics/skills@frontend-design"
+
+# web-quality-skills (author field in SKILL.md; repo name inferred — TODO: verify at skills.sh)
+skill_add "web-quality-skills/agent-skills@accessibility"
+skill_add "web-quality-skills/agent-skills@best-practices"
+skill_add "web-quality-skills/agent-skills@core-web-vitals"
+skill_add "web-quality-skills/agent-skills@web-quality-audit"
+
+# raphael-salaja (author field in SKILL.md; repo name inferred — TODO: verify at skills.sh)
+skill_add "raphael-salaja/agent-skills@userinterface-wiki"
+
+# metaswarm — full framework from dsifry/metaswarm (CLAUDE.md); installs all skills at once
+skill_add "dsifry/metaswarm"
+
+echo "Skills installation complete."
+{{ end -}}

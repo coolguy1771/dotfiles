@@ -1,0 +1,42 @@
+git:
+  paging:
+    colorArg: always
+    pager: delta --paging=never
+  commit:
+    signOff: false
+  pull:
+    mode: rebase
+  log:
+    order: topo-order
+    showGraph: when-maximised
+  autoFetch: true
+  autoRefresh: true
+
+gui:
+  showFileTree: true
+  showRandomTip: false
+  showCommandLog: false
+  showBottomLine: true
+  nerdFontsVersion: "3"
+  scrollHeight: 2
+  sidePanelWidth: 0.3333
+  expandFocusedSidePanel: false
+  mainPanelSplitMode: flexible
+  language: auto
+  timeFormat: "2006-01-02 15:04:05"
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+    inactiveBorderColor:
+      - default
+    selectedLineBgColor:
+      - "#44475a"
+
+update:
+  method: never
+
+confirmOnQuit: false
+disableStartupPopups: true
+notARepository: prompt
+promptToReturnFromSubprocess: true
