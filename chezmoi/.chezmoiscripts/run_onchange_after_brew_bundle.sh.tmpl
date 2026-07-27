@@ -7,6 +7,6 @@ if ! brew --version &>/dev/null; then
   echo "Fix: run 'brew update' or update Homebrew manually. See https://github.com/Homebrew/brew/issues/20064"
   exit 0
 fi
-brew bundle --file="{{ .chezmoi.homeDir }}/.Brewfile"
+brew bundle --file="{{ .chezmoi.homeDir }}/Brewfile"
 command -v fc-cache &>/dev/null && fc-cache -fv
 {{ end }}
